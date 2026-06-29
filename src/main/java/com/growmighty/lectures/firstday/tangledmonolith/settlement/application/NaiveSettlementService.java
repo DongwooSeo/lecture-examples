@@ -63,7 +63,7 @@ public class NaiveSettlementService {
             long elapsed = System.currentTimeMillis() - startedAt;
 
             SettleReport report = new SettleReport(
-                    orders.size(), settled, elapsed, monitor.peakUsedMb(), monitor.maxHeapMb());
+                    orders.size(), settled, 0, elapsed, monitor.peakUsedMb(), monitor.maxHeapMb(), "COMPLETED");
             log.warn("[NAIVE] 완료 리포트 = {}", report);
             return report;
         }
@@ -101,7 +101,7 @@ public class NaiveSettlementService {
 
             long elapsed = System.currentTimeMillis() - startedAt;
             SettleReport report = new SettleReport(
-                    holding.size(), settled, elapsed, monitor.peakUsedMb(), monitor.maxHeapMb());
+                    holding.size(), settled, 0, elapsed, monitor.peakUsedMb(), monitor.maxHeapMb(), "COMPLETED");
             log.warn("[NAIVE] 완료 리포트 = {}", report);
             return report;
         }

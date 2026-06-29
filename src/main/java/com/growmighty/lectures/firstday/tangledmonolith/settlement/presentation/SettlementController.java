@@ -18,6 +18,8 @@ import java.util.Map;
  *   <li>POST /settlements/naive          : [Step1-데모1] findAll 전량 적재 → 대용량에서 즉시 OOM</li>
  *   <li>POST /settlements/naive?limit=N  : [Step1-데모2] N건까지 메모리에 쌓으며 정산 → 메모리/시간 증가 추세 관찰</li>
  *   <li>POST /settlements/batch          : [Step2] Spring Batch Chunk 지향 처리 → 메모리 일정하게 유지</li>
+ *   <li>POST /settlements/batch?failAt=0.5      : [Step3-1] 50% 지점에서 강제 실패(장애 시나리오)</li>
+ *   <li>POST /settlements/batch/restart?runId=1 : [Step3-2] 같은 runId 로 네이티브 재시작(이어서 처리)</li>
  *   <li>GET  /settlements/status         : 주문/정산 건수 + 현재 힙 상태 확인</li>
  *   <li>DELETE /settlements              : 정산 결과 비우기 (데모 반복용)</li>
  * </ul>
@@ -49,10 +51,34 @@ public class SettlementController {
     /**
      * [Step2] Spring Batch Chunk 지향 정산. Reader(페이지) → Processor(변환) → Writer(적재).
      * 대용량이어도 chunk 크기만큼만 메모리를 쓰며 끝까지 완주한다. (naive 와 peakHeapMb 비교)
+     *
+     * <p>[Step3-1] {@code failAt} 을 주면(예: 0.5) 그 비율 지점에서 일부러 실패시킨다(장애 시나리오).
+     * {@code failAt} 없이 다시 호출하면 멱등 스킵으로 이미 정산된 부분은 건너뛰고 나머지만 처리한다.
      */
     @PostMapping("/batch")
-    public ApiResponse<SettleReport> settleBatch() {
-        return ApiResponse.ok(settlementBatchService.run());
+    public ApiResponse<SettleReport> settleBatch(@RequestParam(required = false) Double failAt) {
+        SettleReport report = (failAt == null)
+                ? settlementBatchService.run()
+                : settlementBatchService.runFailing(failAt);
+        return ApiResponse.ok(report);
+    }
+
+    /**
+     * [Step3-2] Spring Batch 네이티브 재시작 데모. <b>같은 runId</b> 로 다시 호출하면
+     * 새 인스턴스가 아니라 실패한 그 인스턴스를 <b>이어서</b> 재개한다.
+     *
+     * <ul>
+     *   <li>1차: {@code POST /settlements/batch/restart?runId=1&failAt=0.5} → 50%에서 FAILED</li>
+     *   <li>2차: {@code POST /settlements/batch/restart?runId=1}            → 이어서 COMPLETED</li>
+     * </ul>
+     *
+     * @param runId  재시작 키(같은 값=이어서, 다른 값=새로). 기본 1.
+     * @param failAt null 이면 정상/재개, 값이 있으면 그 비율에서 실패.
+     */
+    @PostMapping("/batch/restart")
+    public ApiResponse<SettleReport> restartBatch(@RequestParam(defaultValue = "1") long runId,
+                                                  @RequestParam(required = false) Double failAt) {
+        return ApiResponse.ok(settlementBatchService.runRestartable(runId, failAt));
     }
 
     @GetMapping("/status")
