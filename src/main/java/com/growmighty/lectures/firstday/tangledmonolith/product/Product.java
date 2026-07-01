@@ -1,6 +1,5 @@
 package com.growmighty.lectures.firstday.tangledmonolith.product;
 
-import com.growmighty.lectures.firstday.tangledmonolith.seller.Seller;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,5 +42,14 @@ public class Product {
         product.stockQuantity = stockQuantity;
         product.description = description;
         return product;
+    }
+
+    // 재고는 Product 자신의 상태이며 변경 규칙도 자신이 알고 있기 때문에, 책임은 Product가 진다.
+    public void decreaseStock(int quantity) {
+        if (this.stockQuantity < quantity) {
+            throw new IllegalStateException("재고가 부족합니다. product=" + this.name);
+        }
+
+        this.stockQuantity = (this.stockQuantity - quantity);
     }
 }

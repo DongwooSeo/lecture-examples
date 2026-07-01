@@ -31,4 +31,9 @@ public class Payment {
         payment.status = PaymentStatus.READY;
         return payment;
     }
+
+    // 결제 상태는 Payment의 책임이다.
+    public void changeStatus(PaymentStatus status) {
+        this.status = status;
+    }
 }

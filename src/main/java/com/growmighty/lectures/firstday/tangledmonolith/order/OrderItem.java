@@ -26,8 +26,13 @@ public class OrderItem {
     private String name;
 
     // price 가져온다.
-    @Column(nullable = false)
-    private BigDecimal price;
+    // 역시 money와 연관되어 있으므로 VO를 이용한다.
+    @Embedded
+    @AttributeOverride(
+            name = "value",
+            column = @Column(name = "price", nullable = false)
+    )
+    private Money price;
 
     // productId로 접근
     @Column(nullable = false)
@@ -39,11 +44,20 @@ public class OrderItem {
     public static OrderItem create(String name, BigDecimal price, Long productId, int quantity) {
         OrderItem orderItem = new OrderItem();
         orderItem.name = name;
-        orderItem.price = price;
+        orderItem.price = Money.from(price); // from 메서드 활용
         orderItem.productId = productId;
         orderItem.quantity = quantity;
 
         return orderItem;
+    }
+
+    // from을 이용한다.
+    public void changePrice(BigDecimal newPrice) {
+        this.price = Money.from(newPrice);
+    }
+
+    public void changeQuantity(int newQuantity) {
+        this.quantity = newQuantity;
     }
 
     void assignOrder(Order order) {
