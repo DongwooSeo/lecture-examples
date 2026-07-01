@@ -20,16 +20,16 @@ public class CartItem {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    // 역시 Product 자체가 아닌 id로만 접근한다.
+    @Column(nullable = false)
+    private Long productId;
 
     @Column(nullable = false)
     private Integer quantity;
 
-    public static CartItem create(Product product, int quantity) {
+    public static CartItem create(Long productId, int quantity) {
         CartItem cartItem = new CartItem();
-        cartItem.product = product;
+        cartItem.productId = productId;
         cartItem.quantity = quantity;
         return cartItem;
     }

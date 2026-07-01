@@ -21,13 +21,14 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    // User 객체 전체를 가져오는 것이 아니라 id로만 접근한다.
+    @Column(nullable = false)
+    private Long userId;
 
-    public static Cart create(User user) {
+    // 받아올 때도 userId를 Long으로 받아오자.
+    public static Cart create(Long userId) {
         Cart cart = new Cart();
-        cart.user = user;
+        cart.userId = userId;
         return cart;
     }
 
