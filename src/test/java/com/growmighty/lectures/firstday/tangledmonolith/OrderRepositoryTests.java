@@ -1,10 +1,10 @@
 package com.growmighty.lectures.firstday.tangledmonolith;
 
-import com.growmighty.lectures.firstday.tangledmonolith.order.Order;
-import com.growmighty.lectures.firstday.tangledmonolith.order.OrderItem;
-import com.growmighty.lectures.firstday.tangledmonolith.order.OrderRepository;
-import com.growmighty.lectures.firstday.tangledmonolith.product.Product;
-import com.growmighty.lectures.firstday.tangledmonolith.seller.Seller;
+import com.growmighty.lectures.firstday.tangledmonolith.order.domain.Order;
+import com.growmighty.lectures.firstday.tangledmonolith.order.domain.OrderItem;
+import com.growmighty.lectures.firstday.tangledmonolith.order.domain.OrderRepository;
+import com.growmighty.lectures.firstday.tangledmonolith.product.domain.Product;
+import com.growmighty.lectures.firstday.tangledmonolith.seller.domain.Seller;
 import com.growmighty.lectures.firstday.tangledmonolith.user.User;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;

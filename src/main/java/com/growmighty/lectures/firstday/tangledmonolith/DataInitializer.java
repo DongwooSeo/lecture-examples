@@ -1,12 +1,12 @@
 package com.growmighty.lectures.firstday.tangledmonolith;
 
-import com.growmighty.lectures.firstday.tangledmonolith.cart.Cart;
-import com.growmighty.lectures.firstday.tangledmonolith.cart.CartItem;
-import com.growmighty.lectures.firstday.tangledmonolith.cart.CartRepository;
-import com.growmighty.lectures.firstday.tangledmonolith.product.Product;
-import com.growmighty.lectures.firstday.tangledmonolith.product.ProductRepository;
-import com.growmighty.lectures.firstday.tangledmonolith.seller.Seller;
-import com.growmighty.lectures.firstday.tangledmonolith.seller.SellerRepository;
+import com.growmighty.lectures.firstday.tangledmonolith.cart.domain.Cart;
+import com.growmighty.lectures.firstday.tangledmonolith.cart.domain.CartItem;
+import com.growmighty.lectures.firstday.tangledmonolith.cart.domain.CartRepository;
+import com.growmighty.lectures.firstday.tangledmonolith.product.domain.Product;
+import com.growmighty.lectures.firstday.tangledmonolith.product.domain.ProductRepository;
+import com.growmighty.lectures.firstday.tangledmonolith.seller.domain.Seller;
+import com.growmighty.lectures.firstday.tangledmonolith.seller.domain.SellerRepository;
 import com.growmighty.lectures.firstday.tangledmonolith.user.User;
 import com.growmighty.lectures.firstday.tangledmonolith.user.UserRepository;
 import lombok.RequiredArgsConstructor;
