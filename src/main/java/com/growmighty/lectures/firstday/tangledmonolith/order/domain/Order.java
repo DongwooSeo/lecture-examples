@@ -86,7 +86,7 @@ public class Order {
                 .map(OrderItem::subtotal)
                 .reduce(Money.zero(), Money::plus);
         this.shippingFee = calculateShippingFee(this.itemsAmount);
-        this.totalAmount = this.items.plus(this.shippingFee);
+        this.totalAmount = this.itemsAmount.plus(this.shippingFee);
     }
 
     private Money calculateShippingFee(Money itemsAmount) {
@@ -111,17 +111,11 @@ public class Order {
         this.paymentId = paymentId;
     }
 
-    private void cancel() {
+    public void cancel() {
         if (this.status == OrderStatus.CANCELLED) {
             throw new IllegalStateException("이미 취소된 주문입니다.");
         }
         this.status = OrderStatus.CANCELLED;
-    }
-
-    private Money calculateTotalAmount(List<OrderItem> items) {
-        return items.stream()
-                .map(e -> e.getPrice().times(e.getQuantity()))
-                .reduce(Money.zero(), Money::plus);
     }
 
     // 다음 두 메서드는 변경 사항 감지 시 총액을 재계산하여 정합성을 유지한다.

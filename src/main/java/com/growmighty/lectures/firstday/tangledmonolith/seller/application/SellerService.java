@@ -5,7 +5,7 @@ import com.growmighty.lectures.firstday.tangledmonolith.seller.application.dto.A
 import com.growmighty.lectures.firstday.tangledmonolith.seller.application.dto.SellerInfo;
 import com.growmighty.lectures.firstday.tangledmonolith.seller.domain.Seller;
 import com.growmighty.lectures.firstday.tangledmonolith.seller.domain.SellerRepository;
-import com.growmighty.lectures.firstday.tangledmonolith.user.UserService;
+import com.growmighty.lectures.firstday.tangledmonolith.user.application.UserService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

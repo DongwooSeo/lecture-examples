@@ -9,7 +9,7 @@ public record OrderResult(
         Long id,
         OrderStatus status,
         BigDecimal itemsAmount,
-        BigDecimal shoppingFee,
+        BigDecimal shippingFee,
         BigDecimal totalAmount
 ) {
     public static OrderResult from(Order order) {

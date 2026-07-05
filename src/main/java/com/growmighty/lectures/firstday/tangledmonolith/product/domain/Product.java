@@ -40,7 +40,7 @@ public class Product {
 
     // private 생성자, 정적 팩토리 메서드로 생성
     private Product(Long sellerId, String name, BigDecimal price, Integer stockQuantity, String description) {
-        vaildatePrice(price);
+        validatePrice(price);
         if (stockQuantity == null || stockQuantity < 0) {
             throw new IllegalArgumentException("재고는 0개 이상이어야 합니다. 입력값: " + stockQuantity);
         }

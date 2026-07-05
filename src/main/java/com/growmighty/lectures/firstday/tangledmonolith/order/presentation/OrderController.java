@@ -1,11 +1,10 @@
 package com.growmighty.lectures.firstday.tangledmonolith.order.presentation;
 
+import com.growmighty.lectures.firstday.tangledmonolith.common.response.ApiResponse;
 import com.growmighty.lectures.firstday.tangledmonolith.order.application.OrderService;
-import com.growmighty.lectures.firstday.tangledmonolith.order.application.dto.OrderConsistencyView;
-import com.growmighty.lectures.firstday.tangledmonolith.order.application.dto.OrderResult;
-
-import com.growmighty.lectures.firstday.tangledmonolith.order.domain.OrderRepository;
-import lombok.NonNull;
+import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.OrderConsistencyResponse;
+import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.OrderResponse;
+import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.PlaceOrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,38 +20,42 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public List<OrderResult> getOrders() {
-        return orderService.getOrders();
+    public ApiResponse<List<OrderResponse>> getOrder() {
+        List<OrderResponse> responses = orderService.getOrders().stream()
+                .map(OrderResponse::from)
+                .toList();
+        return ApiResponse.ok(responses);
     }
 
     @PostMapping
-    public OrderResult placeOrder(@RequestBody OrderCreationRequest request) {
-        return orderService.placeOrder(request.userId(), request.requests()); // OrderItemCommand.dto
+    public ApiResponse<OrderResponse> placeOrder(@RequestBody PlaceOrderRequest request) {
+        return ApiResponse.ok(OrderResponse.from(orderService.placeOrder(request.toCommand())));
     }
 
-    // 표현 -> 응용
+    @PostMapping("/from-cart")
+    public ApiResponse<OrderResponse> placeOrderFromCart(@RequestParam Long userId) {
+        return ApiResponse.ok(OrderResponse.from(orderService.placeOrderFromCart(userId)));
+    }
+
+    @PostMapping("/{orderId}/cancel")
+    public ApiResponse<OrderResponse> cancelOrder(@PathVariable Long orderId) {
+        return ApiResponse.ok(OrderResponse.from(orderService.cancelOrder(orderId)));
+    }
+
     @GetMapping("/{orderId}/inspect")
-    public OrderConsistencyView inspectOrder(@PathVariable Long orderId) {
-        return orderService.inspectOrder(orderId);
+    public ApiResponse<OrderConsistencyResponse> inspectOrder(@PathVariable Long orderId) {
+        return ApiResponse.ok(OrderConsistencyResponse.from(orderService.inspectOrder(orderId)));
     }
 
-    // 항목 가격만 바꾸는 API, 하지만 Order의 개입을 받아야만 한다.
-    @PatchMapping("/orderItems/{orderItemId}/price")
-    public void changeOrderItemPrice(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestParam BigDecimal price) {
+    @PatchMapping("/{orderId}/orderItems/{orderItemId}/price")
+    public ApiResponse<Void> changeOrderItemPrice(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestParam BigDecimal price) {
         orderService.changeItemPrice(orderId, orderItemId, price);
+        return ApiResponse.ok();
     }
 
-    // 수량만 바꾸는 API. 위와 똑같이 총액은 그대로 남는다.
-    @PatchMapping("/orderItems/{orderItemId}/quantity")
-    public void changeOrderItemQuantity(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestParam int quantity) {
+    @PatchMapping("/{orderId}/orderItems/{orderItemId}/quantity")
+    public ApiResponse<Void> changeOrderItemQuantity(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestParam int quantity) {
         orderService.changeItemQuantity(orderId, orderItemId, quantity);
-    }
-
-    public record OrderCreationRequest(@NonNull Long userId, @NonNull List<OrderItemRequest> requests) {
-
-    }
-
-    public record OrderItemRequest(@NonNull Long productId, @NonNull Integer quantity) {
-
+        return ApiResponse.ok();
     }
 }

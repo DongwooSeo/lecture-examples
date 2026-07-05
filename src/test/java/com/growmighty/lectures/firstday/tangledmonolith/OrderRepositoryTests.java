@@ -5,7 +5,7 @@ import com.growmighty.lectures.firstday.tangledmonolith.order.domain.OrderItem;
 import com.growmighty.lectures.firstday.tangledmonolith.order.domain.OrderRepository;
 import com.growmighty.lectures.firstday.tangledmonolith.product.domain.Product;
 import com.growmighty.lectures.firstday.tangledmonolith.seller.domain.Seller;
-import com.growmighty.lectures.firstday.tangledmonolith.user.User;
+import com.growmighty.lectures.firstday.tangledmonolith.user.domain.User;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

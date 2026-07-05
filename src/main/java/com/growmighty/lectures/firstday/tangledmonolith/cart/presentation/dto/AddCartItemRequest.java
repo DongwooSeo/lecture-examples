@@ -4,7 +4,7 @@ import com.growmighty.lectures.firstday.tangledmonolith.cart.application.dto.Add
 import lombok.NonNull;
 
 public record AddCartItemRequest(@NonNull Long productId, @NonNull Integer quantity) {
-    public AddCartItemRequest toCommand(Long userId) {
+    public AddCartItemCommand toCommand(Long userId) {
         return new AddCartItemCommand(userId, productId, quantity);
     }
 }
