@@ -35,15 +35,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartService cartService;
 
-    // 주문 생성.
-    // 재고 확인하고 깎기, 단가*수량 합산, 총액 계산까지 전부 여기서 처리한다.
-    // 쓰다 보니 OrderService 가 너무 많은 걸 알고 있고 금액 계산도 BigDecimal 로 여기저기 흩어져 있음.
-    // 재고는 원래 Product 일, 총액은 Order 일인데 다 끌어와서 처리하는 중.
     @Transactional
-    // 이제 PlaceOrderCommand라는 DTO를 이용하여 정형화된 요청과 응답을 구성한다.
     public OrderResult placeOrder(OrderItemCommand command) {
-        // id로 user 찾기
-        UserInfo userInfo = userService.getUser(command.userId());
+        UserInfo user = userService.getUser(command.userId());
 
         List<OrderLine> lines = command.lines();
         if (lines == null || lines.isEmpty()) {
@@ -56,7 +50,7 @@ public class OrderService {
             orderItems.add(OrderItem.create(product.name(), product.price(), product.id(), line.quantity()));
             productService.decreaseStock(line.productId(), line.quantity());
         }
-        Order order = Order.create(userInfo.id(), orderItems);
+        Order order = Order.create(user.id(), orderItems);
 
         PaymentInfo payment = paymentService.pay(order.getTotalAmount().getValue());
         order.completePayment(payment.paymentId());
