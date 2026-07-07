@@ -2,9 +2,7 @@ package com.growmighty.lectures.firstday.tangledmonolith.order.presentation;
 
 import com.growmighty.lectures.firstday.tangledmonolith.common.response.ApiResponse;
 import com.growmighty.lectures.firstday.tangledmonolith.order.application.OrderService;
-import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.OrderConsistencyResponse;
-import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.OrderResponse;
-import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.PlaceOrderRequest;
+import com.growmighty.lectures.firstday.tangledmonolith.order.presentation.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +31,8 @@ public class OrderController {
     }
 
     @PostMapping("/from-cart")
-    public ApiResponse<OrderResponse> placeOrderFromCart(@RequestParam Long userId) {
-        return ApiResponse.ok(OrderResponse.from(orderService.placeOrderFromCart(userId)));
+    public ApiResponse<OrderResponse> placeOrderFromCart(@RequestBody PlaceOrderFromCartRequest request) {
+        return ApiResponse.ok(OrderResponse.from(orderService.placeOrderFromCart(request.userId())));
     }
 
     @PostMapping("/{orderId}/cancel")
@@ -48,14 +46,14 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}/orderItems/{orderItemId}/price")
-    public ApiResponse<Void> changeOrderItemPrice(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestParam BigDecimal price) {
-        orderService.changeItemPrice(orderId, orderItemId, price);
+    public ApiResponse<Void> changeOrderItemPrice(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestBody ChangeOrderItemPriceRequest request) {
+        orderService.changeItemPrice(orderId, orderItemId, request.price());
         return ApiResponse.ok();
     }
 
     @PatchMapping("/{orderId}/orderItems/{orderItemId}/quantity")
-    public ApiResponse<Void> changeOrderItemQuantity(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestParam int quantity) {
-        orderService.changeItemQuantity(orderId, orderItemId, quantity);
+    public ApiResponse<Void> changeOrderItemQuantity(@PathVariable Long orderId, @PathVariable Long orderItemId, @RequestBody ChangeOrderItemQuantityRequest request) {
+        orderService.changeItemQuantity(orderId, orderItemId, request.quantity());
         return ApiResponse.ok();
     }
 }

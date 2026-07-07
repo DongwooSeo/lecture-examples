@@ -2,12 +2,10 @@ package com.growmighty.lectures.firstday.tangledmonolith.payment.presentation;
 
 import com.growmighty.lectures.firstday.tangledmonolith.common.response.ApiResponse;
 import com.growmighty.lectures.firstday.tangledmonolith.payment.application.PaymentService;
+import com.growmighty.lectures.firstday.tangledmonolith.payment.presentation.dto.PayRequest;
 import com.growmighty.lectures.firstday.tangledmonolith.payment.presentation.dto.PaymentResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
 
+    @PostMapping
+    public ApiResponse<PaymentResponse> pay(@RequestBody PayRequest request) {
+        return ApiResponse.ok(PaymentResponse.from(paymentService.pay(request.amount())));
+    }
+
     @GetMapping("/{paymentId}")
     public ApiResponse<PaymentResponse> getPayment(@PathVariable Long paymentId) {
         return ApiResponse.ok(PaymentResponse.from(paymentService.getPayment(paymentId)));
+    }
+
+    @PostMapping("/{paymentId}/cancel")
+    public ApiResponse<PaymentResponse> cancel(@PathVariable Long paymentId) {
+        return ApiResponse.ok(PaymentResponse.from(paymentService.cancel(paymentId)));
     }
 }
