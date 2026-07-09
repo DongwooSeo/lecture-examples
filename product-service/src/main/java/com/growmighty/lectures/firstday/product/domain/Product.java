@@ -35,6 +35,9 @@ public class Product {
     @Lob
     private String description;
 
+    @Column(nullable = false)
+    private Long salesCount;
+
     private Product(Long sellerId, String name, BigDecimal price, Integer stockQuantity, String description) {
         validatePrice(price);
         if (stockQuantity == null || stockQuantity < 0) {
@@ -46,6 +49,7 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.description = description;
         this.status = stockQuantity == 0 ? ProductStatus.OUT_OF_STOCK : ProductStatus.ON_SALE;
+        this.salesCount = 0L;
     }
 
     public static Product register(Long sellerId, String name, BigDecimal price, Integer stockQuantity, String description) {
@@ -61,9 +65,10 @@ public class Product {
         }
         if (this.stockQuantity < quantity) {
             throw new IllegalStateException(
-                    "재고가 부족합니다. product=" + this.name + ", 재고=" + this.stockQuantity + ", 요청=" + quantity);
+                "재고가 부족합니다. product=" + this.name + ", 재고=" + this.stockQuantity + ", 요청=" + quantity);
         }
         this.stockQuantity -= quantity;
+        this.salesCount += quantity;
         if (this.stockQuantity == 0) {
             this.status = ProductStatus.OUT_OF_STOCK;
         }
@@ -74,6 +79,7 @@ public class Product {
             throw new IllegalArgumentException("복원 수량은 1개 이상이어야 합니다.");
         }
         this.stockQuantity += quantity;
+        this.salesCount = Math.max(0, this.salesCount - quantity);
         if (this.status == ProductStatus.OUT_OF_STOCK) {
             this.status = ProductStatus.ON_SALE;
         }
