@@ -20,4 +20,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
+    implementation 'org.springframework.ai:spring-ai-starter-model-ollama'   // 실습용 (공짜)
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'   // 데모용 (크레딧)
+    implementation 'org.springframework.ai:spring-ai-starter-model-anthropic'   // 데모용 (크레딧)
 }

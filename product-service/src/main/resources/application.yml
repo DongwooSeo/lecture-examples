@@ -10,3 +10,22 @@ spring:
     uris: http://localhost:9200
     connection-timeout: 3s
     socket-timeout: 5s
+
+  ai:
+    retry:
+      max-attempts: 1
+    model:
+      chat: ollama          # ★ 활성 챗 프로바이더 선택 스위치 — Step 2에서 openai로 바꿔봅니다
+      embedding: ollama     # 임베딩은 오늘 하루 종일 ollama 고정 (운영 방침, 오전 3-6)
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: exaone3.5:2.4b   # ★ 수업 기본 모델 — thinking 없는 한국어 특화 경량 모델이라 지연이 예측 가능 (2.0부터 options 중간 단계 없이 바로)
+        temperature: 0.0        # ★ 속성 추출엔 창의성이 필요 없습니다 — 일관성이 우선. (2.0부터 프레임워크 기본값 0.7도 사라졌으므로 명시 필수)
+        # think: false          # ★ qwen3 등 thinking 모델로 올릴 때만 주석 해제(필수!) — 2.0.0 GA부터 지원. exaone에는 불필요
+      embedding:
+        model: bge-m3       # ★ 마찬가지로 embedding.options.model → embedding.model
+    openai:
+      api-key: ${OPENAI_API_KEY:}      # 팀 키 — 환경변수로만! 절대 커밋 금지
+      chat:
+        model: gpt-4.1-mini

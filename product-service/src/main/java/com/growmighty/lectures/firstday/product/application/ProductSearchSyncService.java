@@ -1,8 +1,8 @@
 package com.growmighty.lectures.firstday.product.application;
 
+import com.growmighty.lectures.firstday.product.application.port.ProductIndexPort;
+import com.growmighty.lectures.firstday.product.domain.Product;
 import com.growmighty.lectures.firstday.product.domain.ProductRepository;
-import com.growmighty.lectures.firstday.product.infrastructure.search.ProductDocument;
-import com.growmighty.lectures.firstday.product.infrastructure.search.ProductSearchRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,15 +16,13 @@ import java.util.List;
 public class ProductSearchSyncService {
 
     private final ProductRepository productRepository;
-    private final ProductSearchRepository searchRepository;
+    private final ProductIndexPort indexPort;   // ★ 인프라(ProductSearchRepository)가 아닌 포트에 의존 (DIP)
 
     @Transactional(readOnly = true)
     public long reindexAll() {
-        List<ProductDocument> docs = productRepository.findAll().stream()
-            .map(ProductDocument::from)
-            .toList();
-        searchRepository.saveAll(docs);        // ★ 내부적으로 bulk API 사용 — Step 7에서 단건 저장과 비교
-        log.info("전체 재색인 완료: {}건", docs.size());
-        return docs.size();
+        List<Product> products = productRepository.findAll();
+        indexPort.indexAll(products);
+        log.info("전체 재색인 완료: {}건", products.size());
+        return products.size();
     }
 }
